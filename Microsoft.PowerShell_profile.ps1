@@ -108,6 +108,21 @@ function ViewHostFile()
 	get-content $hostsPath | write-host
 }
 
+function ViewProfile()
+{
+	get-content $PROFILE | write-host 
+}
+
+function EditProfile()
+{
+	npp $PROFILE | write-host 
+}
+
+function GetProfileFromGitHub
+{
+	Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1" -outfile $PROFILE
+}
+
 #endregion shortcuts
 
 # Final Setup after function definitions
