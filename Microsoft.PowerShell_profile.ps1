@@ -1,5 +1,3 @@
-#TEST
-
 #region Transcript
 
 $PSTranscriptDir = "$env:USERPROFILE\Documents\WindowsPowerShell\transcripts\$(Get-Date -Format yyyy)\$(Get-Date -Format MM)\$(Get-Date -Format dd)"
