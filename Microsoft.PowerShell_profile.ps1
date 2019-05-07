@@ -1,3 +1,5 @@
+#v1.1
+
 #region Transcript
 
 $PSTranscriptDir = "$env:USERPROFILE\Documents\WindowsPowerShell\transcripts\$(Get-Date -Format yyyy)\$(Get-Date -Format MM)\$(Get-Date -Format dd)"
@@ -120,7 +122,9 @@ function EditProfile()
 
 function GetProfileFromGitHub
 {
-	Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1" -outfile $PROFILE
+	#Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1" -outfile $PROFILE
+    #Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1" | Select-Object -Expand Content | Out-File $PROFILE
+	(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1").Content | Out-File $PROFILE
 }
 
 #endregion shortcuts
@@ -191,4 +195,5 @@ function StartService ($Servicename)
 }
 
 #endregion Windows Service
+
 
