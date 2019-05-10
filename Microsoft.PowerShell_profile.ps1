@@ -137,6 +137,11 @@ function TranscriptsViewFolder()
 	ii $($PSTranscriptDir)
 }
 
+function JMeterOpenGUI ()
+{
+	start-process "C:\ProgramData\chocolatey\lib\jmeter\tools\apache-jmeter-5.1\bin\jmeter.bat"
+}
+
 #endregion shortcuts
 
 # Final Setup after function definitions
