@@ -127,9 +127,9 @@ Function ProfileViewGitPage ()
 
 function ProfileUpdateFromGitHub ()
 {
-	Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1" -outfile $PROFILE
+	#Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1" -outfile $PROFILE
 	#Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1" | Select-Object -Expand Content | Out-File $PROFILE
-	#(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1").Content | Out-File $PROFILE
+	(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1").Content | Out-File $PROFILE
 }
 
 function TranscriptsViewFolder()
