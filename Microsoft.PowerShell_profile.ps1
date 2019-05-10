@@ -98,7 +98,7 @@ function NPP ($file)
      start-process -FilePath $npp -ArgumentList $file
 }
 
-function OpenHostFile()
+function HostFileOpen()
 {
     $hostsPath = "$env:windir\System32\drivers\etc\hosts"
     npp $hostsPath
@@ -110,21 +110,31 @@ function ViewHostFile()
 	get-content $hostsPath | write-host
 }
 
-function ViewProfile()
+function ProfileView()
 {
 	get-content $PROFILE | write-host 
 }
 
-function EditProfile()
+function ProfileEditLocal()
 {
 	npp $PROFILE | write-host 
 }
 
-function GetProfileFromGitHub
+Function ProfileViewGitPage ()
 {
-	#Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1" -outfile $PROFILE
-    #Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1" | Select-Object -Expand Content | Out-File $PROFILE
-	(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1").Content | Out-File $PROFILE
+	start-process "https://github.com/madrum/PowershellProfile/blob/master/Microsoft.PowerShell_profile.ps1"
+}
+
+function ProfileUpdateFromGitHub ()
+{
+	Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1" -outfile $PROFILE
+	#Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1" | Select-Object -Expand Content | Out-File $PROFILE
+	#(Invoke-WebRequest -Uri "https://raw.githubusercontent.com/madrum/PowershellProfile/master/Microsoft.PowerShell_profile.ps1").Content | Out-File $PROFILE
+}
+
+function TranscriptsViewFolder()
+{
+	ii $($PSTranscriptDir)
 }
 
 #endregion shortcuts
