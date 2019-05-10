@@ -104,7 +104,7 @@ function HostFileOpen()
     npp $hostsPath
 }
 
-function ViewHostFile()
+function HostFileView()
 {
 	$hostsPath = "$env:windir\System32\drivers\etc\hosts"
 	get-content $hostsPath | write-host
