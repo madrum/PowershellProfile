@@ -1,22 +1,17 @@
-#v1.31
+#v1.4
+
+Write-Host "loading profile..."
 
 #region Transcript
 
 $PSTranscriptDir = "$env:USERPROFILE\Documents\WindowsPowerShell\transcripts\$(Get-Date -Format yyyy)\$(Get-Date -Format MM)\$(Get-Date -Format dd)"
-
 $TranscriptName = "$(get-date -Format yyyyMMdd-hhmmss).txt"
 
-
-
 New-Item -ItemType Directory -Path $PSTranscriptDir -Force | Out-Null
-
 Start-Transcript "$($PSTranscriptDir)\$($TranscriptName)" | Out-Null
 
-
-
-Write-Host "Transcript Directory: $($PSTranscriptDir)"
-
-Write-Host "Transcript started: $($TranscriptName)"
+#Write-Host "Transcript Directory: $($PSTranscriptDir)"
+#Write-Host "Transcript started: $($TranscriptName)"
 
 #endregion Transcript
 
@@ -26,7 +21,9 @@ Set-PSReadlineKeyHandler -Chord Tab -Function Complete
 Set-PSReadlineKeyHandler -Chord CTRL+Tab -Function TabCompleteNext
 Set-PSReadlineOption -ShowToolTips -BellStyle Visual
 
-#endregin Tab Completion Behavior
+#endregion Tab Completion Behavior
+
+
 
 #region shortcuts
 
@@ -84,7 +81,6 @@ function color($scheme)
     Clear-Host
 }
 
-
 function PSVersion ()
 {
     write-host PowerShell Version $PSVersionTable.PSVersion
@@ -95,20 +91,21 @@ $npp = "C:\Program Files (x86)\Notepad++\notepad++.exe"
 #Open file in NotePad++
 function NPP ($file)
 {
-     start-process -FilePath $npp -ArgumentList $file
+    if (Test-Path -Path $npp)
+    {
+        start-process -FilePath $npp -ArgumentList $file
+    } else {
+
+        "Notepad++ is not installed"
+    }
 }
 
 function HostFileOpen()
 {
     $hostsPath = "$env:windir\System32\drivers\etc\hosts"
-    npp $hostsPath
+    ise $hostsPath
 }
 
-function HostFileView()
-{
-	$hostsPath = "$env:windir\System32\drivers\etc\hosts"
-	get-content $hostsPath | write-host
-}
 
 function ProfileView()
 {
@@ -117,7 +114,7 @@ function ProfileView()
 
 function ProfileEditLocal()
 {
-	npp $PROFILE | write-host 
+	ise $PROFILE | write-host 
 }
 
 Function ProfileViewGitPage ()
@@ -137,9 +134,47 @@ function TranscriptsViewFolder()
 	ii $($PSTranscriptDir)
 }
 
+function LockedOut()
+{
+	while (1 -ne 2)
+	{
+	  $CurrentUser = $env:USERNAME
+	  $LockedOut = (Get-ADUser -Properties Lockedout -Filter {SamAccountName -like $CurrentUser}).LockedOut
+	  if ($LockedOut -eq $true) 
+	  {
+		[console]::beep(500,300)
+		write-host "$(Get-Date) - $CurrentUser is Locked out" -ForegroundColor Red
+	  }
+	  else
+	  {
+		write-host "$(Get-Date) - $CurrentUser is not locked out yet" -ForegroundColor Green
+	  }
+	  
+	  Start-Sleep -Seconds 5 -OutVariable $null
+	  Get-PSSession | Remove-PSSession
+	}
+}
+
 function JMeterOpenGUI ()
 {
 	start-process "C:\ProgramData\chocolatey\lib\jmeter\tools\apache-jmeter-5.1\bin\jmeter.bat"
+}
+
+function DebugSet ()
+{
+param(
+[Parameter(Mandatory=$true,
+  HelpMessage="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_preference_variables?view=powershell-6#debugpreference")]
+[ValidateNotNullOrEmpty()]
+[ValidateSet("Stop", "Inquire", "Continue", "SilentlyContinue")]
+[Alias("B","Whatchugondo")]
+[String]
+$Behavior
+)
+
+$DebugPreference=$Behavior
+"Debug Preference set to: {0}" -f $DebugPreference
+	
 }
 
 #endregion shortcuts
@@ -158,6 +193,8 @@ else
 {
     color default
 }
+
+DebugSet Inquire
 
 #endregion Visuals
 
