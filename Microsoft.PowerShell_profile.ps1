@@ -1,6 +1,4 @@
-#v1.4
-
-Write-Host "loading profile..."
+Write-Host "loading profile..." -NoNewLine	
 
 #region Transcript
 
