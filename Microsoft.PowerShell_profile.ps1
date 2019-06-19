@@ -1,4 +1,4 @@
-Write-Host "loading profile..." -NoNewLine	
+Write-Host "loading profile..." -NoNewline
 
 #region Transcript
 
@@ -171,7 +171,7 @@ $Behavior
 )
 
 $DebugPreference=$Behavior
-"Debug Preference set to: {0}" -f $DebugPreference
+"Debug Preference set to: {0}." -f $DebugPreference
 	
 }
 
@@ -185,7 +185,7 @@ $DebugPreference=$Behavior
 if (isAdmin)
 {
     color admin
-    write-host "ADMIN SHELL`n"
+    write-host "ADMIN SHELL. " -NoNewline
 }
 else
 {
