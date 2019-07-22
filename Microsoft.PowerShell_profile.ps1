@@ -1,15 +1,22 @@
-Write-Host "loading profile..." -NoNewline
+#v1.31
 
 #region Transcript
 
 $PSTranscriptDir = "$env:USERPROFILE\Documents\WindowsPowerShell\transcripts\$(Get-Date -Format yyyy)\$(Get-Date -Format MM)\$(Get-Date -Format dd)"
+
 $TranscriptName = "$(get-date -Format yyyyMMdd-hhmmss).txt"
 
+
+
 New-Item -ItemType Directory -Path $PSTranscriptDir -Force | Out-Null
+
 Start-Transcript "$($PSTranscriptDir)\$($TranscriptName)" | Out-Null
 
-#Write-Host "Transcript Directory: $($PSTranscriptDir)"
-#Write-Host "Transcript started: $($TranscriptName)"
+
+
+Write-Host "Transcript Directory: $($PSTranscriptDir)"
+
+Write-Host "Transcript started: $($TranscriptName)"
 
 #endregion Transcript
 
@@ -19,9 +26,7 @@ Set-PSReadlineKeyHandler -Chord Tab -Function Complete
 Set-PSReadlineKeyHandler -Chord CTRL+Tab -Function TabCompleteNext
 Set-PSReadlineOption -ShowToolTips -BellStyle Visual
 
-#endregion Tab Completion Behavior
-
-
+#endregin Tab Completion Behavior
 
 #region shortcuts
 
@@ -79,6 +84,7 @@ function color($scheme)
     Clear-Host
 }
 
+
 function PSVersion ()
 {
     write-host PowerShell Version $PSVersionTable.PSVersion
@@ -89,13 +95,7 @@ $npp = "C:\Program Files (x86)\Notepad++\notepad++.exe"
 #Open file in NotePad++
 function NPP ($file)
 {
-    if (Test-Path -Path $npp)
-    {
-        start-process -FilePath $npp -ArgumentList $file
-    } else {
-
-        "Notepad++ is not installed"
-    }
+     start-process -FilePath $npp -ArgumentList $file
 }
 
 function HostFileOpen()
@@ -104,6 +104,11 @@ function HostFileOpen()
     ise $hostsPath
 }
 
+function HostFileView()
+{
+	$hostsPath = "$env:windir\System32\drivers\etc\hosts"
+	get-content $hostsPath | write-host
+}
 
 function ProfileView()
 {
@@ -158,21 +163,36 @@ function JMeterOpenGUI ()
 	start-process "C:\ProgramData\chocolatey\lib\jmeter\tools\apache-jmeter-5.1\bin\jmeter.bat"
 }
 
-function DebugSet ()
+function PurgeMQ ()
 {
-param(
-[Parameter(Mandatory=$true,
-  HelpMessage="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_preference_variables?view=powershell-6#debugpreference")]
-[ValidateNotNullOrEmpty()]
-[ValidateSet("Stop", "Inquire", "Continue", "SilentlyContinue")]
-[Alias("B","Whatchugondo")]
-[String]
-$Behavior
-)
+Param (
+    [Parameter(Mandatory=$true)]
+    [string]$Server
+    )
 
-$DebugPreference=$Behavior
-"Debug Preference set to: {0}." -f $DebugPreference
-	
+
+	Invoke-Command -ComputerName $Server -ScriptBlock {
+	[Reflection.Assembly]::LoadWithPartialName("System.Messaging")
+
+	$queueName = 'FormatName:Direct=OS:.\PRIVATE$\masterdistributor'
+	$queue = new-object -TypeName System.Messaging.MessageQueue -ArgumentList $queueName 
+	$queue.Purge()
+
+	$queueName = 'FormatName:Direct=OS:.\PRIVATE$\nsaprocess'
+	$queue = new-object -TypeName System.Messaging.MessageQueue -ArgumentList $queueName 
+	$queue.Purge()
+
+	$queueName = 'FormatName:Direct=OS:.\PRIVATE$\journalprocess'
+	$queue = new-object -TypeName System.Messaging.MessageQueue -ArgumentList $queueName 
+	$queue.Purge()
+
+	$queueName = 'FormatName:Direct=OS:.\System$;DEADLETTER'
+	$queue = new-object -TypeName System.Messaging.MessageQueue -ArgumentList $queueName
+	$queue.Purge()
+} 
+
+	write-host "Purged MQ tickets in MasterDistributor, NSAProcess, JouranlProcess, and DeadLetter queues on $($Server)"
+
 }
 
 #endregion shortcuts
@@ -185,14 +205,12 @@ $DebugPreference=$Behavior
 if (isAdmin)
 {
     color admin
-    write-host "ADMIN SHELL. " -NoNewline
+    write-host "ADMIN SHELL`n"
 }
 else
 {
     color default
 }
-
-DebugSet Inquire
 
 #endregion Visuals
 
