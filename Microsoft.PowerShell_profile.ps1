@@ -1,5 +1,3 @@
-#v1.31
-
 #region Transcript
 
 $PSTranscriptDir = "$env:USERPROFILE\Documents\WindowsPowerShell\transcripts\$(Get-Date -Format yyyy)\$(Get-Date -Format MM)\$(Get-Date -Format dd)"
@@ -29,6 +27,11 @@ Set-PSReadlineOption -ShowToolTips -BellStyle Visual
 #endregin Tab Completion Behavior
 
 #region shortcuts
+
+function ise($file)
+{
+    PowerShell_ISE.exe $file
+}
 
 function gui()
 {
@@ -101,7 +104,7 @@ function NPP ($file)
 function HostFileOpen()
 {
     $hostsPath = "$env:windir\System32\drivers\etc\hosts"
-    ise $hostsPath
+     PowerShell_ISE.exe $hostsPath
 }
 
 function HostFileView()
@@ -117,7 +120,7 @@ function ProfileView()
 
 function ProfileEditLocal()
 {
-	ise $PROFILE | write-host 
+	 PowerShell_ISE.exe $PROFILE | write-host 
 }
 
 Function ProfileViewGitPage ()
